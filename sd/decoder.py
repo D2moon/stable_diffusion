@@ -4,6 +4,7 @@ from torch.nn import functional as F
 from attention import SelfAttention
 
 class VAE_ResidualBlock(nn.Module):
+
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.groupnorm_1 = nn.GroupNorm(32, in_channels)
@@ -38,6 +39,7 @@ class VAE_ResidualBlock(nn.Module):
 
 
 class VAE_AttentionBlock(nn.Module):
+    
     def __init__(self, channels:int):
         super().__init__()
         self.groupnorm = nn.GroupNorm(32, channels)

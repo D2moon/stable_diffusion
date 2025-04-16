@@ -12,7 +12,7 @@ class SelfAttention(nn.Module):
         self.n_heads = n_heads
         self.d_head = d_embed // n_heads
 
-    def forward(self, x: torch.Tensor, casual_mask: False)-> torch.Tensor:
+    def forward(self, x: torch.Tensor, causal_mask: False)-> torch.Tensor:
         # x: (BatchSize, SeqLen, Dim)
 
         input_shape = x.shape
@@ -31,7 +31,7 @@ class SelfAttention(nn.Module):
         # weight: (BtchSize, H, SeqLen, SeqLen)
         weight = q @ k.transpose(-2, -1)
 
-        if casual_mask:
+        if causal_mask:
             # mask where the upper triangle is 1 and lower triangle is 0
             mask = torch.ones_like(weight, dtype=torch.bool).triu(1)
             weight.masked_fill_(mask, -torch.inf)
