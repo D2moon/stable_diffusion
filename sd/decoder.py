@@ -75,7 +75,7 @@ class VAE_AttentionBlock(nn.Module):
 class VAE_Decoder(nn.Sequential):
 
     def __init__(self):
-        super.__init__(
+        super().__init__(
             nn.Conv2d(4, 4, kernel_size=1, padding=0),
 
             nn.Conv2d(4, 512, kernel_size=3, padding=1),
@@ -103,7 +103,7 @@ class VAE_Decoder(nn.Sequential):
             # (BatchSize, 512, Height/4, Width/4) -> (BatchSize, 512, Height/2, Width/2)
             nn.Upsample(scale_factor=2),
 
-            nn.Conv2d(512, 256, kernel_size=3, padding=1),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
 
             VAE_ResidualBlock(512, 256),
             VAE_ResidualBlock(256, 256),
@@ -120,7 +120,7 @@ class VAE_Decoder(nn.Sequential):
 
             nn.GroupNorm(32, 128),
 
-            nn.SiLu(),
+            nn.SiLU(),
 
             # (BatchSize, 128, Height, Width) -> (BatchSize, 3, Height, Width)
             nn.Conv2d(128, 3, kernel_size=3, padding=1),

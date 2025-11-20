@@ -44,10 +44,10 @@ class VAE_Encoder(nn.Sequential):
             VAE_ResidualBlock(512, 512),
 
             # (BatchSize, 512, Height/8, Width/8) -> (BatchSize, 512, Height/8, Width/8)
-            VAE_AttentionBlock(512),
-
-            # (BatchSize, 512, Height/8, Width/8) -> (BatchSize, 512, Height/8, Width/8)
             VAE_ResidualBlock(512, 512),
+            
+            # (BatchSize, 512, Height/8, Width/8) -> (BatchSize, 512, Height/8, Width/8)
+            VAE_AttentionBlock(512),
 
             # (BatchSize, 512, Height/8, Width/8) -> (BatchSize, 512, Height/8, Width/8)
             VAE_ResidualBlock(512, 512),
@@ -67,9 +67,9 @@ class VAE_Encoder(nn.Sequential):
 
     def forward(self, x:torch.Tensor, noise:torch.Tensor) -> torch.Tensor:
         # x: (BatchSize, 3, Height, Width)
-        # noise: (BatchSize, 8, Height/8, Width/8)
+        # noise: (BatchSize, 4, Height/8, Width/8)
         for module in self:
-            if getattr(module, 'stride', None) == 2:
+            if getattr(module, 'stride', None) == (2, 2):
                 # (PaddingLeft, PaddingRight, PaddingTop, PaddingBottom)
                 x = F.pad(x, (0, 1, 0, 1))
             x = module(x)
@@ -87,6 +87,7 @@ class VAE_Encoder(nn.Sequential):
         stdev = torch.sqrt(variance)
 
         # Z=N(0, 1) -> Z*stdev + mean = N(mean, variance)
+        # print(mean.shape, stdev.shape, noise.shape)
         x = mean + stdev * noise
 
         # Scale the output to [-1, 1]
